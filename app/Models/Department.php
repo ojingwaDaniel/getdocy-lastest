@@ -22,4 +22,9 @@ class Department extends Model
     {
         return $this->hasMany(User::class);
     }
+
+       public function studentsCount(): int
+    {
+        return $this->users()->whereHas('roles', fn($q) => $q->where('name', 'student'))->count();
+    }
 }

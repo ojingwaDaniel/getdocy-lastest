@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Lecturer;
+use App\Models\Student;
+use App\Models\Department;
 
 class User extends Authenticatable
 {
@@ -47,4 +50,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+   
+
+// Inside the User class:
+public function lecturer()
+{
+    return $this->hasOne(Lecturer::class);
+}
+
+public function student()
+{
+    return $this->hasOne(Student::class);
+}
+
+public function department()
+{
+    return $this->belongsTo(Department::class);
+}
 }
