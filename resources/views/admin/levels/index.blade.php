@@ -23,12 +23,7 @@
             @forelse($levels as $level)
             <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 font-medium">{{ $level->name }}</td>
-                <td class="px-6 py-4">
-                    <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm font-mono">
-                        {{ $level->value }}
-                    </span>
-                </td>
-               
+                <td class="px-6 py-4">{{ $level->value }}</td>
                 <td class="px-6 py-4 space-x-2">
                     <a href="{{ route('admin.levels.edit', $level) }}"
                        class="text-blue-600 hover:underline text-sm">Edit</a>
@@ -36,7 +31,7 @@
                     <form method="POST"
                           action="{{ route('admin.levels.destroy', $level) }}"
                           class="inline"
-                          onsubmit="return confirm('Delete this Level?')">
+                          onsubmit="return confirm('Delete this level?')">
                         @csrf
                         @method('DELETE')
                         <button class="text-red-500 hover:underline text-sm">Delete</button>
@@ -45,17 +40,15 @@
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="px-6 py-8 text-center text-gray-400">
-                    No Levels yet. Create one!
+                <td colspan="3" class="px-6 py-8 text-center text-gray-400">
+                    No levels yet. Create one!
                 </td>
             </tr>
             @endforelse
         </tbody>
     </table>
-
-    {{-- Pagination --}}
     <div class="px-6 py-4 border-t">
-        {{ $Levels->links() }}
+        {{ $levels->links() }}
     </div>
 </div>
 @endsection
