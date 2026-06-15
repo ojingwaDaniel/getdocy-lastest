@@ -14,6 +14,7 @@ class DepartmentSeeder extends Seeder
             ['name' => 'Electrical Engineering', 'code' => 'EEE', 'faculty' => 'Engineering'],
             ['name' => 'Mass Communication', 'code' => 'MAC', 'faculty' => 'Arts'],
             ['name' => 'Accounting', 'code' => 'ACC', 'faculty' => 'Management Sciences'],
+            ['name' => 'Mathematics', 'code' => 'MAT', 'faculty' => 'School Of Physical Science'],
         ];
 
         foreach ($departments as $dept) {

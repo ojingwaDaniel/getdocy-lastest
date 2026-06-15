@@ -9,14 +9,15 @@ use App\Http\Controllers\Admin\LecturerController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Lecturer\DashboardController as LecturerDashboard;
 use App\Http\Controllers\Student\DashboardController as StudentDashboard;
+use App\Http\Controllers\Student\StudentRegisterController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+//public routes
+Route::post('/students/register', [StudentRegisterController::class, 'store'])
+    ->name('students.register');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -24,7 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
  
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
@@ -33,7 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('levels', LevelController::class);
         Route::resource('courses', CourseController::class);
         Route::resource('lecturers', LecturerController::class);
-        Route::resource('students', StudentController::class);
+        Route::resource('lecturers', StudentController::class);
+        
     });
 
  

@@ -72,7 +72,7 @@ class StudentController extends Controller
 
 public function update(Request $request, User $student)
 {
-    // Safely get the student record id, or 0 if it doesn't exist
+   
     $studentRecordId = $student->student?->id ?? 0;
 
     $validated = $request->validate([
@@ -91,7 +91,6 @@ public function update(Request $request, User $student)
             'department_id' => $validated['department_id'],
         ]);
 
-        // Update OR create the student record if it didn't exist
         $student->student()->updateOrCreate(
             ['user_id' => $student->id],
             [

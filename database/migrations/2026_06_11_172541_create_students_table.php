@@ -15,7 +15,6 @@ return new class extends Migration
         $table->id();
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
         $table->string('matric_number')->unique();
-        $table->foreignId('department_id')->constrained()->onDelete('cascade');
         $table->foreignId('level_id')->constrained()->onDelete('cascade');
         $table->enum('status', ['active', 'inactive', 'graduated'])->default('active');
         $table->timestamps();

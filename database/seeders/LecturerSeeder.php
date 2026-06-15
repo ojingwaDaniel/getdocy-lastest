@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Lecturer;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class LecturerSeeder extends Seeder
@@ -15,15 +17,26 @@ class LecturerSeeder extends Seeder
     public function run(): void
     {
         //
-          $lecturer = User::firstOrCreate(
+        DB::transaction(function (){
+            $lecturer = User::firstOrCreate(
             [ "email" => "lecturer@getdocy.com"],
             [
-            'name' => 'Daniel Ojingwa',
+            'name' => 'E O Elijah',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             ]
         );
         $lecturer->assignRole("lecturer");
+        Lecturer::firstOrCreate(
+            ["user_id"=> $lecturer->id],
+            [
+                "department_id" => 5,
+                "status" => "active"
+            ]
+        );
+
+        });
+          
     }
     
 }
