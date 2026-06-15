@@ -19,6 +19,26 @@ Route::get('/', function () {
 Route::post('/students/register', [StudentRegisterController::class, 'store'])
     ->name('students.register');
 
+
+    Route::get('/dashboard', function () {
+
+    $user = auth()->user();
+
+    if ($user->hasRole('admin')) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    if ($user->hasRole('lecturer')) {
+        return redirect()->route('lecturer.dashboard');
+    }
+
+    if ($user->hasRole('student')) {
+        return redirect()->route('student.dashboard');
+    }
+
+    abort(403);
+})->middleware('auth')->name('dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -34,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('levels', LevelController::class);
         Route::resource('courses', CourseController::class);
         Route::resource('lecturers', LecturerController::class);
-        Route::resource('lecturers', StudentController::class);
+        Route::resource('students', StudentController::class);
         
     });
 
