@@ -43,7 +43,7 @@ class DocumentController extends Controller
             'category'    => 'required|in:handout,past_question,textbook,note,assignment,other',
             'file'        => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:20480', // 20MB max
         ]);
-
+        $course = Course::findOrFail($validated['course_id']);
         // Store the file
         // Storage::disk('public') saves to storage/app/public/
         // The path returned is relative e.g. "documents/abc123.pdf"
@@ -54,6 +54,8 @@ class DocumentController extends Controller
             'title'        => $validated['title'],
             'description'  => $validated['description'],
             'course_id'    => $validated['course_id'],
+            'department_id' => $course->department_id,
+            'level_id'      => $course->level_id,
             'category'     => $validated['category'],
             'file_path'    => $path,
             'file_type'    => $file->getClientOriginalExtension(),

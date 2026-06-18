@@ -23,6 +23,7 @@ class StudentSeeder extends Seeder
             'name' => 'Daniel Ojingwa',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
+            "department_id" => 5
             ]
 
 

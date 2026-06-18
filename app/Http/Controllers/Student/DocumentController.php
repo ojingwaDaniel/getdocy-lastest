@@ -20,10 +20,7 @@ class DocumentController extends Controller
                          ->forDepartment($user->department_id)
                          ->with(['course', 'uploader']);
 
-        // Filter by level
-        if ($request->filled('level_id')) {
-            $query->forLevel($request->level_id);
-        }
+        
 
         // Filter by category
         if ($request->filled('category')) {
@@ -45,9 +42,8 @@ class DocumentController extends Controller
         // For filter dropdowns — only courses in this student's dept
         $courses = Course::where('department_id', $user->department_id)
                          ->orderBy('code')->get();
-        $levels  = Level::orderBy('value')->get();
-
-        return view('student.documents.index', compact('documents', 'courses', 'levels'));
+        
+        return view('student.documents.index', compact('documents', 'courses'));
     }
 
     public function download(Document $document)

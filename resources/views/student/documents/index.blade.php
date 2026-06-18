@@ -33,15 +33,7 @@
             <option value="assignment"    {{ request('category') == 'assignment'    ? 'selected' : '' }}>Assignments</option>
         </select>
 
-        <select name="level_id" class="border rounded px-3 py-2">
-            <option value="">All Levels</option>
-            @foreach($levels as $level)
-                <option value="{{ $level->id }}"
-                    {{ request('level_id') == $level->id ? 'selected' : '' }}>
-                    {{ $level->name }}
-                </option>
-            @endforeach
-        </select>
+        
 
         <button type="submit"
                 class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 col-span-2 md:col-span-1">

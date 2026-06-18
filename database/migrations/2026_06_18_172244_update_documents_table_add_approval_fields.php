@@ -22,6 +22,7 @@ return new class extends Migration
 
             $table->timestamp('approved_at')->nullable()->after('approved_by');
             $table->text('rejection_reason')->nullable()->after('approved_at');
+            $table->timestamps();
 
             // Replace the old 'type' enum with richer categories
             // First drop the old column, then add the new one

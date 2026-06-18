@@ -23,6 +23,7 @@ class LecturerSeeder extends Seeder
             [
             'name' => 'E O Elijah',
             'password' => Hash::make('password'),
+            "department_id"=> 5,
             'email_verified_at' => now(),
             ]
         );
