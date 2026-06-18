@@ -33,6 +33,17 @@
         <p class="text-sm text-gray-500 uppercase tracking-wide">Documents</p>
         <p class="text-3xl font-bold text-gray-800 mt-1">{{ $stats['total_documents'] }}</p>
     </div>
+
+    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-orange-500">
+    <p class="text-sm text-gray-500 uppercase tracking-wide">Pending Approval</p>
+    <p class="text-3xl font-bold text-gray-800 mt-1">{{ $stats['pending_documents'] }}</p>
+    @if($stats['pending_documents'] > 0)
+        <a href="{{ route('admin.documents.index', ['status' => 'pending']) }}"
+           class="text-orange-600 text-sm hover:underline mt-1 block">
+            Review now →
+        </a>
+    @endif
+</div>
 </div>
 
 {{-- Quick Links --}}

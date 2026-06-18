@@ -18,7 +18,14 @@
                    class="block text-indigo-200 hover:text-white hover:bg-indigo-700 px-4 py-2 rounded">
                     Dashboard
                 </a>
-                {{-- Week 3: document upload links will go here --}}
+                <a href="{{ route('lecturer.documents.index') }}"
+                class="block text-indigo-200 hover:text-white hover:bg-indigo-700 px-4 py-2 rounded">
+                    My Documents
+                </a>
+                <a href="{{ route('lecturer.documents.create') }}"
+                class="block text-indigo-200 hover:text-white hover:bg-indigo-700 px-4 py-2 rounded">
+                    Upload Document
+                </a>
 
                 <hr class="border-indigo-700 my-4">
 

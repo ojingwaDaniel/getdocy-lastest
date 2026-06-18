@@ -18,7 +18,8 @@ class DashboardController extends Controller
             'total_lecturers'   => User::role('lecturer')->count(),
             'total_departments' => Department::count(),
             'total_courses'     => Course::count(),
-            'total_documents'   => Document::count()
+            'total_documents'   => Document::count(),
+            'pending_documents' => Document::pending()->count(),
         ];
 
         return view('admin.dashboard', compact('stats'));

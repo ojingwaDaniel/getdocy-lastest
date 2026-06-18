@@ -37,6 +37,10 @@
                    class="block text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-2 rounded">
                    Students
                 </a>
+                <a href="{{ route('admin.documents.index') }}"
+                class="block text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-2 rounded">
+                    Documents
+                </a>
                 <hr class="border-gray-700 my-4">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

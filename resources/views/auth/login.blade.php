@@ -110,7 +110,7 @@
                                 <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
                             </label>
                             @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">
+                                <a href="{{ route('password.request') }}" class="text-sm text-primary-600 dark:text-white hover:underline">
                                     Forgot password?
                                 </a>
                             @endif

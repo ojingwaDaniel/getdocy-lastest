@@ -18,7 +18,10 @@
                    class="block text-emerald-200 hover:text-white hover:bg-emerald-700 px-4 py-2 rounded">
                     Dashboard
                 </a>
-                {{-- Week 3: browse documents, search links will go here --}}
+                <a href="{{ route('student.documents.index') }}"
+                class="block text-emerald-200 hover:text-white hover:bg-emerald-700 px-4 py-2 rounded">
+                    Browse Documents
+                </a>
 
                 <hr class="border-emerald-700 my-4">
 
