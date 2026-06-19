@@ -10,14 +10,31 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index()
-    {
-        $courses = Course::with(['department', 'level'])
-                         ->orderBy('code')
-                         ->paginate(15);
+   public function index(Request $request)
+{
+    $query = Course::with(['department', 'level']);
 
-        return view('admin.courses.index', compact('courses'));
+   
+    if ($request->filled('department_id')) {
+        $query->where('department_id', $request->department_id);
     }
+
+ 
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('title', 'like', '%' . $request->search . '%')
+              ->orWhere('code', 'like', '%' . $request->search . '%');
+        });
+    }
+
+    $courses = $query->orderBy('code')
+                     ->paginate(15)
+                     ->withQueryString();
+
+    $departments = Department::orderBy('name')->get();
+
+    return view('admin.courses.index', compact('courses', 'departments'));
+}
 
     public function create()
     {

@@ -53,7 +53,7 @@ class User extends Authenticatable
     }
    
 
-// Inside the User class:
+
 public function lecturer()
 {
     return $this->hasOne(Lecturer::class);

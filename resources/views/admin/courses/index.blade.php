@@ -10,6 +10,40 @@
     </a>
 </div>
 
+
+<div class="bg-white rounded-lg shadow p-4 mb-6">
+    <form method="GET" action="{{ route('admin.courses.index') }}"
+          class="flex gap-3 flex-wrap">
+
+        <input type="text" name="search"
+               value="{{ request('search') }}"
+               placeholder="Search title or code..."
+               class="border rounded px-3 py-2 flex-1 min-w-48">
+
+        <select name="department_id" class="border rounded px-3 py-2 min-w-48">
+            <option value="">All Departments</option>
+            @foreach($departments as $dept)
+                <option value="{{ $dept->id }}"
+                    {{ request('department_id') == $dept->id ? 'selected' : '' }}>
+                    {{ $dept->name }}
+                </option>
+            @endforeach
+        </select>
+
+        <button type="submit"
+                class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700">
+            Filter
+        </button>
+
+        @if(request()->hasAny(['search', 'department_id']))
+        <a href="{{ route('admin.courses.index') }}"
+           class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50">
+            Clear
+        </a>
+        @endif
+    </form>
+</div>
+
 <div class="bg-white rounded-lg shadow overflow-hidden">
     <table class="w-full text-left">
         <thead class="bg-gray-50 border-b">
@@ -51,7 +85,11 @@
             @empty
             <tr>
                 <td colspan="6" class="px-6 py-8 text-center text-gray-400">
-                    No courses yet. Create one!
+                    @if(request()->hasAny(['search', 'department_id']))
+                        No courses match your filters.
+                    @else
+                        No courses yet. Create one!
+                    @endif
                 </td>
             </tr>
             @endforelse

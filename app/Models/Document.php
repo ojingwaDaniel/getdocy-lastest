@@ -32,8 +32,6 @@ class Document extends Model
         'file_size'   => 'integer',
     ];
 
-    // ─── RELATIONSHIPS ────────────────────────────────────────
-
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
@@ -49,9 +47,7 @@ class Document extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
-    // ─── SCOPES ───────────────────────────────────────────────
-    // Scopes are reusable query filters you chain like:
-    // Document::approved()->forDepartment(1)->get()
+   
 
     public function scopeApproved(Builder $query): Builder
     {
@@ -77,9 +73,7 @@ class Document extends Model
         );
     }
 
-    // ─── HELPERS ──────────────────────────────────────────────
-
-    // Human-readable file size: "2.4 MB"
+    
     public function getFileSizeFormattedAttribute(): string
     {
         $bytes = $this->file_size;
@@ -88,7 +82,6 @@ class Document extends Model
         return $bytes . ' B';
     }
 
-    // Category label map
     public function getCategoryLabelAttribute(): string
     {
         return match($this->category) {
@@ -101,7 +94,6 @@ class Document extends Model
         };
     }
 
-    // Category badge colour for the UI
     public function getCategoryColorAttribute(): string
     {
         return match($this->category) {
@@ -122,4 +114,8 @@ class Document extends Model
     public function isApproved(): bool  { return $this->status === 'approved'; }
     public function isPending(): bool   { return $this->status === 'pending'; }
     public function isRejected(): bool  { return $this->status === 'rejected'; }
+    public function isUploadedByAdmin(): bool
+    {
+        return $this->uploader && $this->uploader->hasRole('admin');
+    }
 }

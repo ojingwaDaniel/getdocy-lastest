@@ -3,44 +3,105 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\Document;
+use App\Models\Level;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    public function index(Request $request)
+   public function index(Request $request)
+{
+    $query = Document::with(['course.department', 'course.level', 'uploader']);
+
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    
+    if ($request->filled('department_id')) {
+        $query->forDepartment($request->department_id);
+    }
+
+  
+    if ($request->filled('level_id')) {
+        $query->forLevel($request->level_id);
+    }
+
+    // Search by title
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
+    }
+
+    $documents = $query->latest()
+                       ->paginate(20)
+                       ->withQueryString();
+
+    $pendingCount = Document::pending()->count();
+    $departments  = Department::orderBy('name')->get();
+    $levels       = Level::orderBy('value')->get();
+
+    return view('admin.documents.index', compact(
+        'documents', 'pendingCount', 'departments', 'levels'
+    ));
+}
+
+   
+    public function create()
     {
-        $query = Document::with(['course.department', 'uploader'])
-                         ->latest();
+        $courses = Course::with(['department', 'level'])
+                         ->orderBy('code')
+                         ->get();
 
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+        return view('admin.documents.create', compact('courses'));
+    }
 
-        // Filter by department
-        if ($request->filled('department_id')) {
-            $query->forDepartment($request->department_id);
-        }
+  
+    public function store(Request $request)
+    {
+       
+        $validated = $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'course_id'   => 'required|exists:courses,id',
+            'category'    => 'required|in:handout,past_question,textbook,note,assignment,other',
+            'file'        => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:20480',
+        ]);
+        $course = Course::findOrFail($validated['course_id']);
 
-        // Search by title
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
+        $file = $request->file('file');
+        $path = $file->store('documents', 'public');
 
-        $documents  = $query->paginate(20)->withQueryString();
-        $pendingCount = Document::pending()->count();
+        Document::create([
+            'title'       => $validated['title'],
+            'description' => $validated['description'],
+            'course_id'   => $validated['course_id'],
+            "department_id" => $course->department_id,
+            "level_id" => $course->level_id,
+            'category'    => $validated['category'],
+            'file_path'   => $path,
+            'file_type'   => $file->getClientOriginalExtension(),
+            'file_size'   => $file->getSize(),
+            'uploaded_by' => auth()->id(),
+            // Auto-approved — admin uploads don't need review
+            'status'      => 'approved',
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
+        ]);
 
-        return view('admin.documents.index', compact('documents', 'pendingCount'));
+        return redirect()->route('admin.documents.index')
+                         ->with('success', 'Document uploaded and published successfully.');
     }
 
     public function approve(Document $document)
     {
         $document->update([
-            'status'      => 'approved',
-            'approved_by' => auth()->id(),
-            'approved_at' => now(),
+            'status'           => 'approved',
+            'approved_by'      => auth()->id(),
+            'approved_at'      => now(),
             'rejection_reason' => null,
         ]);
 

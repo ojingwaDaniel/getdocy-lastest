@@ -55,10 +55,13 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('courses', CourseController::class);
         Route::resource('lecturers', LecturerController::class);
         Route::resource('students', StudentController::class);
+        Route::get('/documents/create', [App\Http\Controllers\Admin\DocumentController::class, 'create'])->name('documents.create');
+        Route::post('/documents', [App\Http\Controllers\Admin\DocumentController::class, 'store'])->name('documents.store');
         Route::get('/documents', [App\Http\Controllers\Admin\DocumentController::class, 'index'])->name('documents.index');
         Route::patch('/documents/{document}/approve', [App\Http\Controllers\Admin\DocumentController::class, 'approve'])->name('documents.approve');
         Route::patch('/documents/{document}/reject', [App\Http\Controllers\Admin\DocumentController::class, 'reject'])->name('documents.reject');
         Route::delete('/documents/{document}', [App\Http\Controllers\Admin\DocumentController::class, 'destroy'])->name('documents.destroy');
+        
                 
     });
 

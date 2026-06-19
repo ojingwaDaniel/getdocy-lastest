@@ -44,9 +44,6 @@ class DocumentController extends Controller
             'file'        => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:20480', // 20MB max
         ]);
         $course = Course::findOrFail($validated['course_id']);
-        // Store the file
-        // Storage::disk('public') saves to storage/app/public/
-        // The path returned is relative e.g. "documents/abc123.pdf"
         $file = $request->file('file');
         $path = $file->store('documents', 'public');
 
@@ -61,7 +58,7 @@ class DocumentController extends Controller
             'file_type'    => $file->getClientOriginalExtension(),
             'file_size'    => $file->getSize(),
             'uploaded_by'  => auth()->id(),
-            'status'       => 'pending', // always starts as pending
+            'status'       => 'pending', 
         ]);
 
         return redirect()->route('lecturer.documents.index')

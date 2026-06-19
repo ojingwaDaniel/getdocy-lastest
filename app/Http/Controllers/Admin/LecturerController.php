@@ -55,6 +55,8 @@ class LecturerController extends Controller
                 'user_id'  => $user->id,
                 'staff_id' => $validated['staff_id'],
                 'title'    => $validated['title'] ?? null,
+                'department_id' => $validated['department_id'],
+
             ]);
         });
 

@@ -11,6 +11,11 @@
             </p>
         @endif
     </div>
+
+    <a href="{{ route('admin.documents.create') }}"
+       class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        + Upload Document
+    </a>
 </div>
 
 {{-- Filters --}}
@@ -22,6 +27,26 @@
                value="{{ request('search') }}"
                placeholder="Search title..."
                class="border rounded px-3 py-2 flex-1 min-w-48">
+
+        <select name="department_id" class="border rounded px-3 py-2 min-w-44">
+            <option value="">All Departments</option>
+            @foreach($departments as $dept)
+                <option value="{{ $dept->id }}"
+                    {{ request('department_id') == $dept->id ? 'selected' : '' }}>
+                    {{ $dept->name }}
+                </option>
+            @endforeach
+        </select>
+
+        <select name="level_id" class="border rounded px-3 py-2 min-w-36">
+            <option value="">All Levels</option>
+            @foreach($levels as $level)
+                <option value="{{ $level->id }}"
+                    {{ request('level_id') == $level->id ? 'selected' : '' }}>
+                    {{ $level->name }}
+                </option>
+            @endforeach
+        </select>
 
         <select name="status" class="border rounded px-3 py-2">
             <option value="">All Statuses</option>
@@ -35,10 +60,12 @@
             Filter
         </button>
 
+        @if(request()->hasAny(['search', 'department_id', 'level_id', 'status']))
         <a href="{{ route('admin.documents.index') }}"
            class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50">
             Clear
         </a>
+        @endif
     </form>
 </div>
 
@@ -50,6 +77,7 @@
                 <th class="px-6 py-3 text-gray-600 font-semibold">Document</th>
                 <th class="px-6 py-3 text-gray-600 font-semibold">Uploaded By</th>
                 <th class="px-6 py-3 text-gray-600 font-semibold">Course</th>
+                <th class="px-6 py-3 text-gray-600 font-semibold">Level</th>
                 <th class="px-6 py-3 text-gray-600 font-semibold">Category</th>
                 <th class="px-6 py-3 text-gray-600 font-semibold">Status</th>
                 <th class="px-6 py-3 text-gray-600 font-semibold">Actions</th>
@@ -67,6 +95,9 @@
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-600">
                     {{ $doc->uploader->name ?? '—' }}
+                    @if($doc->isUploadedByAdmin())
+                        <span class="bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded text-xs ml-1">Admin</span>
+                    @endif
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-600">
                     {{ $doc->course->code ?? '—' }}
@@ -74,6 +105,9 @@
                     <span class="text-xs text-gray-400">
                         {{ $doc->course->department->name ?? '' }}
                     </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-600">
+                    {{ $doc->course->level->name ?? '—' }}
                 </td>
                 <td class="px-6 py-4">
                     <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
@@ -91,8 +125,6 @@
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex flex-col gap-1">
-
-                        {{-- Approve --}}
                         @if(!$doc->isApproved())
                         <form method="POST"
                               action="{{ route('admin.documents.approve', $doc) }}">
@@ -101,7 +133,6 @@
                         </form>
                         @endif
 
-                        {{-- Reject --}}
                         @if(!$doc->isRejected())
                         <button onclick="showRejectModal({{ $doc->id }}, '{{ addslashes($doc->title) }}')"
                                 class="text-red-500 hover:underline text-sm text-left">
@@ -109,7 +140,6 @@
                         </button>
                         @endif
 
-                        {{-- Delete --}}
                         <form method="POST"
                               action="{{ route('admin.documents.destroy', $doc) }}"
                               onsubmit="return confirm('Permanently delete this document?')">
@@ -122,9 +152,9 @@
                 </td>
             </tr>
 
-            {{-- Reject reason modal row (hidden) --}}
+            
             <tr id="reject-row-{{ $doc->id }}" class="hidden bg-red-50">
-                <td colspan="6" class="px-6 py-4">
+                <td colspan="7" class="px-6 py-4">
                     <form method="POST"
                           action="{{ route('admin.documents.reject', $doc) }}"
                           class="flex gap-3 items-start">
@@ -155,8 +185,12 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="px-6 py-12 text-center text-gray-400">
-                    No documents found.
+                <td colspan="7" class="px-6 py-12 text-center text-gray-400">
+                    @if(request()->hasAny(['search', 'department_id', 'level_id', 'status']))
+                        No documents match your filters.
+                    @else
+                        No documents found.
+                    @endif
                 </td>
             </tr>
             @endforelse
